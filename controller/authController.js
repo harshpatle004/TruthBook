@@ -29,6 +29,8 @@ const sendOtp = async (req, res) => {
     const expiresAt = Date.now() + 5 * 60 * 1000 // 5 minutes
 
     otpStore.set(email, { otp, expiresAt })
+
+    registrationStore.delete(email)
     registrationStore.set(email, { fullName, email })
 
     await sendEmail(email, otp, fullName.split(" ")[0])
