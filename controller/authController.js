@@ -130,20 +130,21 @@ const setUsername = async (req, res) => {
   try {
     const { email, userName } = req.body
 
-    if (!email || !userName) {
+    if (!email || !userName)
       return res.status(400).json({ message: "Email and username are required" })
-    }
+
+    // 1. Validate format
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/
+    if (!usernameRegex.test(userName))
+      return res.status(400).json({ message: "Invalid username format" })
 
     const userData = registrationStore.get(email)
-
-    if (!userData || !userData.emailVerified || !userData.password) {
+    if (!userData || !userData.emailVerified || !userData.password)
       return res.status(400).json({ message: "Please complete previous steps first" })
-    }
 
     const existingUserName = await User.findOne({ userName })
-    if (existingUserName) {
+    if (existingUserName)
       return res.status(400).json({ message: "Username already taken" })
-    }
 
     const newUser = new User({
       fullName: userData.fullName,
@@ -155,7 +156,8 @@ const setUsername = async (req, res) => {
     const savedUser = await newUser.save()
     registrationStore.delete(email)
 
-    const { password: _, ...finalUserData } = savedUser._doc
+    // 2. Use .toObject() instead of ._doc
+    const { password: _, ...finalUserData } = savedUser.toObject()
 
     const token = jwt.sign(
       { _id: savedUser._id },
@@ -163,15 +165,15 @@ const setUsername = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRE || "7d" }
     )
 
-    res.status(201).json({
-      message: "Account created successfully",
-      user: finalUserData,
-      token,
-    })
+    return res.status(201).json({ message: "Account created successfully", user: finalUserData, token })
 
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: "Something went wrong" })
+    // 3. Handle race condition duplicate key error
+    if (error.code === 11000)
+      return res.status(400).json({ message: "Username already taken" })
+
+    console.error(`[setUsername] Error:`, error.message)
+    return res.status(500).json({ message: "Something went wrong" })
   }
 }
 
