@@ -1,5 +1,8 @@
 const { BrevoClient } = require("@getbrevo/brevo");
 
+console.log("API KEY:", process.env.BREVO_API_KEY);
+console.log("SENDER:", process.env.BREVO_SENDER_EMAIL);
+
 const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
 const sendEmail = async (email, otp, firstName = "there") => {
