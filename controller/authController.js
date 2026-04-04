@@ -160,7 +160,7 @@ const setUsername = async (req, res) => {
     const token = jwt.sign(
       { _id: savedUser._id },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRE }
+      { expiresIn: process.env.JWT_EXPIRE || "7d" }
     )
 
     res.status(201).json({
