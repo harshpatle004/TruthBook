@@ -228,9 +228,14 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Email/Username and password required" })
     }
 
-    const user = email
-      ? await User.findOne({ email })
-      : await User.findOne({ userName })
+    const identifier = {
+      $or: [
+        { email: email },
+        { userName: userName }
+      ]
+    }
+
+    const user = identifier
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
