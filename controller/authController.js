@@ -281,4 +281,4 @@ const login = async (req, res) => {
 }
 
 
-module.exports = { sendOtp, verifyOtp, setPassword, setUsername, resendOtp, login, logout }
+module.exports = { sendOtp, verifyOtp, setPassword, setUsername, resendOtp, login }

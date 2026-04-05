@@ -16,6 +16,5 @@ router.post("/set-password", setPassword)
 router.post("/set-username", setUsername)
 router.post("/resend-otp", resendOtp)
 router.post("/login", login)
-router.get("/logout", logout)
 
 module.exports = router
