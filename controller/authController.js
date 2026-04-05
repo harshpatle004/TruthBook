@@ -224,14 +224,14 @@ const login = async (req, res) => {
   try {
     const { identifier, password } = req.body
 
-    // Validate input
+    
     if (!identifier || !password) {
       return res.status(400).json({
         message: "Email/Username and password required"
       })
     }
 
-    // Create search condition
+    
     const query = {
       $or: [
         { email: identifier },
@@ -239,7 +239,7 @@ const login = async (req, res) => {
       ]
     }
 
-    // Find user
+    
     const user = await User.findOne(query)
 
     if (!user) {
@@ -248,7 +248,7 @@ const login = async (req, res) => {
       })
     }
 
-    // Compare password
+    
     const match = await bcrypt.compare(password, user.password)
 
     if (!match) {

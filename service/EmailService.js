@@ -7,7 +7,21 @@ const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
 const sendEmail = async (email, otp, firstName = "there") => {
   const otpDigits = otp.split("").map(d =>
-    `<div class="tb-digit">${d}</div>`
+    `<td style="padding:0 5px;">
+      <div style="
+        width:42px;
+        height:50px;
+        background:#ffffff;
+        border:1.5px solid #CECBF6;
+        border-radius:10px;
+        text-align:center;
+        line-height:50px;
+        font-size:24px;
+        font-weight:700;
+        color:#3C3489;
+        display:inline-block;
+      ">${d}</div>
+    </td>`
   ).join("");
 
   const expiryTime = new Date(Date.now() + 5 * 60 * 1000).toLocaleTimeString("en-US", {
@@ -42,7 +56,6 @@ const sendEmail = async (email, otp, firstName = "there") => {
     .tb-msg { font-size: 14px; color: #888780; line-height: 1.7; margin-bottom: 1.75rem; }
     .tb-otp-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #7F77DD; margin-bottom: 10px; }
     .tb-otp-box { background: #EEEDFE; border: 1.5px solid #AFA9EC; border-radius: 14px; padding: 1.25rem; text-align: center; margin-bottom: 1.5rem; }
-    .tb-digit { display: inline-block; width: 44px; height: 52px; background: #fff; border: 1.5px solid #CECBF6; border-radius: 10px; text-align: center; line-height: 52px; font-size: 24px; font-weight: 700; color: #3C3489; margin: 0 4px; }
     .tb-expiry { font-size: 12px; color: #B4B2A9; margin-bottom: 1.75rem; }
     .tb-expiry span { color: #7F77DD; font-weight: 600; }
     .tb-footer { background: #26215C; padding: 1.25rem 2.5rem; }
@@ -63,7 +76,14 @@ const sendEmail = async (email, otp, firstName = "there") => {
           This code is valid for <strong style="color:#534AB7;">5 minutes</strong>.
         </div>
         <div class="tb-otp-label">Your one-time code</div>
-        <div class="tb-otp-box">${otpDigits}</div>
+
+        <!-- OTP in a single row using a table (works in all email clients) -->
+        <div class="tb-otp-box">
+          <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+            <tr>${otpDigits}</tr>
+          </table>
+        </div>
+
         <div class="tb-expiry">● This code expires at <span>${expiryTime}</span></div>
       </div>
       <div class="tb-footer"></div>
