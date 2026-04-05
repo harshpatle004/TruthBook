@@ -131,6 +131,7 @@ const setPassword = async (req, res) => {
 const setUsername = async (req, res) => {
   try {
     const { email, userName } = req.body
+    console.log("Hello")
 
     if (!email || !userName)
       return res.status(400).json({ message: "Email and username are required" })
