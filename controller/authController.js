@@ -224,10 +224,14 @@ const login = async (req, res) => {
   try {
     const { email, userName, password } = req.body
 
+    // Validate input
     if (!password || (!email && !userName)) {
-      return res.status(400).json({ message: "Email/Username and password required" })
+      return res.status(400).json({
+        message: "Email/Username and password required"
+      })
     }
 
+    // Search condition
     const identifier = {
       $or: [
         { email: email },
@@ -235,45 +239,44 @@ const login = async (req, res) => {
       ]
     }
 
-    const user = identifier
+    // 🔥 FIX: actual DB call
+    const user = await User.findOne(identifier)
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" })
+      return res.status(404).json({
+        message: "User not found"
+      })
     }
 
+    // Compare password
     const match = await bcrypt.compare(password, user.password)
+
     if (!match) {
-      return res.status(401).json({ message: "Wrong credentials" })
+      return res.status(401).json({
+        message: "Wrong credentials"
+      })
     }
 
+    // Remove password safely
     const { password: _, ...userData } = user._doc
 
+    // Generate token
     const token = jwt.sign(
       { _id: user._id },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRE }
     )
 
-    res.status(200).json({ user: userData, token })
+    res.status(200).json({
+      user: userData,
+      token
+    })
 
   } catch (error) {
     console.error("ERROR:", error)
-    res.status(500).json({ message: error.message })
-  }
-}
-
-
-// ─────────────────────────────────────────
-// Logout
-// GET /auth/logout
-// ─────────────────────────────────────────
-const logout = async (req, res) => {
-  try {
-    res.clearCookie("token")
-    res.status(200).json({ message: "Logged out successfully" })
-  } catch (error) {
-    console.error("ERROR:", error)
-    res.status(500).json({ message: error.message })
+    res.status(500).json({
+      message: error.message
+    })
   }
 }
 
