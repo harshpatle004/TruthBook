@@ -222,25 +222,25 @@ const resendOtp = async (req, res) => {
 // ─────────────────────────────────────────
 const login = async (req, res) => {
   try {
-    const { email, userName, password } = req.body
+    const { identifier, password } = req.body
 
     // Validate input
-    if (!password || (!email && !userName)) {
+    if (!identifier || !password) {
       return res.status(400).json({
         message: "Email/Username and password required"
       })
     }
 
-    // Search condition
-    const identifier = {
+    // Create search condition
+    const query = {
       $or: [
-        { email: email },
-        { userName: userName }
+        { email: identifier },
+        { userName: identifier }
       ]
     }
 
-    // 🔥 FIX: actual DB call
-    const user = await User.findOne(identifier)
+    // Find user
+    const user = await User.findOne(query)
 
     if (!user) {
       return res.status(404).json({
@@ -257,7 +257,7 @@ const login = async (req, res) => {
       })
     }
 
-    // Remove password safely
+    // Remove password
     const { password: _, ...userData } = user._doc
 
     // Generate token
