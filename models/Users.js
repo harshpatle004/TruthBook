@@ -66,6 +66,15 @@ const userSchema = new mongoose.Schema({
         ref : "User"
     }],
 
+    isOnline: {
+         type: Boolean, default: false
+         },
+
+         visibility: {
+             type: String, enum: ["Public", "Private"]
+         },
+
+
 
 }, {
     timestamps: true

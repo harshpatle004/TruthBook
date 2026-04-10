@@ -135,7 +135,7 @@ const setUsername = async (req, res) => {
 
     if (!email || !userName)
       return res.status(400).json({ message: "Email and username are required" })
-
+A
     // 1. Validate format
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/
     if (!usernameRegex.test(userName))
