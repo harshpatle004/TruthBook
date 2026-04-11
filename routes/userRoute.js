@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 const multer = require("multer")
 const upload = multer({ dest: "uploads/" })
-const verifyToken = require("../middleware/verifyToken")
+const verifyToken = require("../middlewareS/verifyToken")
 const {
   getProfile,
   updateProfile,
