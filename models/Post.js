@@ -15,21 +15,21 @@ const postSchema = new mongoose.Schema({
 
     image: [
         {
-                type : String,
-                require : false
+            type: String,
+            required: false
         }
     ],
-    likes :[{
+
+    likes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref : "User"
+        ref: "User"
     }],
 
-    comments : [{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Comment"
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment"
     }],
 
+}, { timestamps: true })   // ← fixed: was "timesstamps"
 
-},{timesstamps : true}) 
-
-module.exports= mongoose.models("Post",postSchema)
+module.exports = mongoose.model("Post", postSchema)  // ← fixed: was mongoose.models()
